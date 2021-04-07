@@ -59,7 +59,7 @@
     journald = {
       extraConfig = ''
         SystemMaxUse=500M
-      ''
+      '';
     };
     zfs = {
       autoScrub = {
