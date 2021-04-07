@@ -81,6 +81,7 @@
       enable = true;
       liveRestore = false; # Docker daemon stop will stop all containers
       storageDriver = "overlay2";
+      logDriver = "journald";
       autoPrune = {
         enable = true;
         flags = [ "-a" ];
