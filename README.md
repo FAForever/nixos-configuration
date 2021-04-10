@@ -1,2 +1,4 @@
 # nixos-configuration
-NixOS configuration files for the prod and test server
+[NixOS](https://nixos.org) is a Linux distribution which uses declarative configuration.
+
+The FAForever project runs all servers on the same configuration as in this repository.
