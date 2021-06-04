@@ -4,7 +4,7 @@
   imports =
     [
       ../../common/configuration.nix
-      ../../secrets/users-prod.nix
+      ../../secrets/users-test.nix
       ./hardware-configuration.nix
     ];
 
