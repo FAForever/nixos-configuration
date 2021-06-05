@@ -38,6 +38,8 @@
       ACTION=="add|change", KERNEL=="sda", ATTR{queue/scheduler}="none"
     '';
   };
+  
+  virtualisation.docker.storageDriver = pkgs.lib.mkForce "zfs";
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
