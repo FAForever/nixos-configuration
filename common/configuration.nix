@@ -32,7 +32,8 @@
     firewall = {
       enable = true;
       logRefusedConnections = false;
-      allowPing = false;
+      allowPing = true;
+      pingLimit = "--limit 1/minute --limit-burst 5";
       rejectPackets = false;
       allowedTCPPorts = [
         80 443
