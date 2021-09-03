@@ -106,7 +106,7 @@
       autosuggestions.enable = true;
       interactiveShellInit = ''
         source ${pkgs.grml-zsh-config}/etc/zsh/zshrc
-        alias faf='docker-compose --compatibility --project-directory /opt/faf -f /opt/faf/docker-compose.yml -f /opt/faf/monitoring.yml'
+        alias faf='docker-compose --compatibility --project-directory /opt/faf -f /opt/faf/docker-compose.yml -f faf-extra.yml -f /opt/faf/monitoring.yml'
       '';
       promptInit = "";
     };
