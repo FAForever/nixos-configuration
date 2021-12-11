@@ -33,7 +33,7 @@
       fsType = "zfs";
     };
 
-  fileSystems."/opt/faf/data/faf-mongodb" =
+  fileSystems."/opt/faf/data/mongodb" =
     { device = "tank/mongodb";
       fsType = "zfs";
     };
@@ -42,6 +42,14 @@
     { device = "tank/replays";
       fsType = "zfs";
     };
+
+  fileSystems."/opt/faf/backups" = {
+    device = "//u280176.your-storagebox.de/backup";
+    fsType = "cifs";
+    options = let
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in ["${automount_opts},credentials=/etc/nixos/secrets/smb-secrets"];
+  };
 
   swapDevices = [ ];
 

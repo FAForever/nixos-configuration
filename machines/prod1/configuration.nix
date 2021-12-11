@@ -17,6 +17,20 @@
    
     # Virtual rescue system boots over fake SATA controllers
     initrd.availableKernelModules = [ "sd_mod" ];
+
+
+    # ZFS tuning for NVMe drives
+    extraModprobeConfig = ''
+        options zfs zfs_vdev_max_active=4000
+	options zfs zfs_vdev_sync_write_min_active=64
+	options zfs zfs_vdev_sync_write_max_active=128
+	options zfs zfs_vdev_sync_read_min_active=64
+	options zfs zfs_vdev_sync_read_max_active=128
+	options zfs zfs_vdev_async_read_min_active=64
+	options zfs zfs_vdev_async_read_max_active=128
+	options zfs zfs_vdev_async_write_min_active=8
+	options zfs zfs_vdev_async_write_max_active=64
+    '';
   };
 
   networking = {

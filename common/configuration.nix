@@ -8,6 +8,7 @@
     # tell it to search partition labels instead of the usual IDs
     supportedFilesystems = [ "zfs" ];
     zfs.forceImportRoot = true;
+    zfs.forceImportAll = true;
     zfs.devNodes = "/dev/disk/by-partlabel";
 
     cleanTmpDir = true;
@@ -19,7 +20,7 @@
       "net.core.netdev_budget" = 600;
     };
 
-    kernelPackages = pkgs.linuxPackages_5_10;
+    kernelPackages = pkgs.linuxPackages_5_4;
   };
 
   boot.initrd.network = {
@@ -31,13 +32,20 @@
     useDHCP = false;
     firewall = {
       enable = true;
+      autoLoadConntrackHelpers = true;
       logRefusedConnections = false;
-      allowPing = true;
-      pingLimit = "--limit 1/minute --limit-burst 5";
       rejectPackets = false;
+      extraCommands = ''
+	iptables -A INPUT -f -j DROP
+
+        iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP;
+        iptables -A INPUT -p icmp -m limit --limit 10/s --limit-burst 50 -j ACCEPT;
+        iptables -A INPUT -p icmp -j DROP;
+      '';
       allowedTCPPorts = [
         80 443
         3478
+        19999
       ];
       allowedUDPPorts = [
         3478
@@ -57,9 +65,14 @@
   ];
 
   services = {
+    timesyncd.servers = [
+      "ntp1.hetzner.de"
+      "ntp2.hetzner.com"
+      "ntp3.hetzner.net"
+    ];
     journald = {
       extraConfig = ''
-        SystemMaxUse=500M
+        SystemMaxUse=10G
       '';
     };
     zfs = {
@@ -106,7 +119,7 @@
       autosuggestions.enable = true;
       interactiveShellInit = ''
         source ${pkgs.grml-zsh-config}/etc/zsh/zshrc
-        alias faf='docker-compose --compatibility --project-directory /opt/faf -f /opt/faf/docker-compose.yml -f faf-extra.yml -f /opt/faf/monitoring.yml'
+        alias faf='docker-compose --compatibility --project-directory /opt/faf -f /opt/faf/docker-compose.yml -f /opt/faf/faf-extra.yml -f /opt/faf/monitoring.yml'
       '';
       promptInit = "";
     };
@@ -117,7 +130,7 @@
 
   users = {
     defaultUserShell = pkgs.zsh;
-    
+
     groups.faforever = {
       gid = 1000;
     };
@@ -128,7 +141,7 @@
       group = "faforever";
     };
   };
-  
+
   nix = {
     gc = {
       automatic = true;
@@ -172,6 +185,13 @@
       wantedBy = [ "timers.target" ];
     };
   };
+
+  security.pam.loginLimits = [{
+    domain = "*";
+    type = "soft";
+    item = "nofile";
+    value = "16384";
+  }];
 
   console = {
     font = "Lat2-Terminus16";
