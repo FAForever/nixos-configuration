@@ -17,10 +17,10 @@
     kernel.sysctl = {
       "net.core.rmem_max" = 4194304;
       "net.core.wmem_max" = 1048576;
-      "net.core.netdev_budget" = 600;
+      "net.core.netdev_budget" = 600;      
     };
 
-    kernelPackages = pkgs.linuxPackages_5_4;
+    kernelPackages = pkgs.linuxPackages_5_15;
   };
 
   boot.initrd.network = {
@@ -37,7 +37,6 @@
       rejectPackets = false;
       extraCommands = ''
 	iptables -A INPUT -f -j DROP
-
         iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP;
         iptables -A INPUT -p icmp -m limit --limit 10/s --limit-burst 50 -j ACCEPT;
         iptables -A INPUT -p icmp -j DROP;
@@ -139,6 +138,7 @@
       isNormalUser = true;
       extraGroups = [ "docker" ];
       group = "faforever";
+      # uid = 1000; fix later
     };
   };
 
