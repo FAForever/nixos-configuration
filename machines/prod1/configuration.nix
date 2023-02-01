@@ -18,7 +18,6 @@
     # Virtual rescue system boots over fake SATA controllers
     initrd.availableKernelModules = [ "sd_mod" ];
 
-
     # ZFS tuning for NVMe drives
     extraModprobeConfig = ''
         options zfs zfs_vdev_max_active=4000
@@ -61,6 +60,27 @@
         enable = true;
         interval = "Tue, 08:00";
       };
+    };
+
+    coturn = {
+      enable = false;
+      realm = "faforever.com";
+      listening-ips = [
+        "116.202.155.226"
+      ];
+      lt-cred-mech = true;
+      #use-auth-secret = true;
+      static-auth-secret = "banana";
+      extraConfig = ''
+        min-port=10000
+        max-port=20000 
+        fingerprint
+        #prometheus
+        no-tls
+        no-dtls
+        #relay-threads=16
+        verbose
+      '';
     };
   };
 

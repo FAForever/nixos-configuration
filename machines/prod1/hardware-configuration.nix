@@ -49,7 +49,7 @@
     device = "//u280176.your-storagebox.de/backup";
     fsType = "cifs";
     options = let
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,seal,uid=1002,gid=1000";
+        automount_opts = "_netdev,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,seal,uid=1002,gid=1000";
       in ["${automount_opts},credentials=/etc/nixos/secrets/bx10-secrets"];
   };
 
@@ -57,7 +57,7 @@
     device = "//u308453.your-storagebox.de/backup/replays";
     fsType = "cifs";
     options = let
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,uid=1002,gid=1000";
+        automount_opts = "_netdev,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=20s,uid=1002,gid=1000";
       in ["${automount_opts},credentials=/etc/nixos/secrets/bx11-secrets"];
   };
 
@@ -65,11 +65,11 @@
     device = "//u308453.your-storagebox.de/backup";
     fsType = "cifs";
     options = let
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+        automount_opts = "_netdev,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
       in ["${automount_opts},credentials=/etc/nixos/secrets/bx11-secrets"];
   };
 
   swapDevices = [ ];
 
-  nix.maxJobs = lib.mkDefault 16;
+  nix.settings.max-jobs = lib.mkDefault 16;
 }

@@ -20,16 +20,16 @@
       "net.core.netdev_budget" = 600;      
     };
 
-    kernelPackages = pkgs.linuxPackages_5_15;
-  };
+    kernelParams = [
+     "zfs.zfs_arc_max=25769803776"
+    ];
 
-  boot.initrd.network = {
-    enable = true;
-    ssh.enable = false;
+    #kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
   };
 
   networking = {
     useDHCP = false;
+    useNetworkd = true;
     firewall = {
       enable = true;
       autoLoadConntrackHelpers = true;
@@ -50,13 +50,13 @@
         3478
       ];
       allowedUDPPortRanges = [
-
+        { from = 10000; to = 20000; }
       ];
     };
   };
 
-  systemd.network.enable = true;
-
+  systemd.network.wait-online.anyInterface = true;
+  
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
@@ -64,6 +64,7 @@
   ];
 
   services = {
+    nscd.enableNsncd = true;
     timesyncd.servers = [
       "ntp1.hetzner.de"
       "ntp2.hetzner.com"
@@ -71,7 +72,7 @@
     ];
     journald = {
       extraConfig = ''
-        SystemMaxUse=10G
+        SystemMaxUse=2G
       '';
     };
     zfs = {
@@ -92,12 +93,13 @@
       enable = true;
       passwordAuthentication = false;
     };
+    netdata.enable = true;
   };
 
   virtualisation = {
     docker = {
       enable = true;
-      liveRestore = false; # Docker daemon stop will stop all containers
+      liveRestore = true; # false = daemon stop will stop all containers
       storageDriver = "overlay2";
       logDriver = "journald";
       autoPrune = {
@@ -105,6 +107,11 @@
         flags = [ "-a" ];
       };
     };
+  };
+
+  # Attempt at preventing Docker from starting before external replays are mounted
+  systemd.services.docker = {
+    after = [ "opt-faf-data-content-replays\x2dold.mount" ];
   };
 
   programs = {
