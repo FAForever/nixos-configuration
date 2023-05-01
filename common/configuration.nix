@@ -60,7 +60,7 @@
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
-    wget vim ripgrep atool git docker-compose htop nano curl bzip2 zstd (python3.withPackages(ps: with ps; [ PyGithub click zstandard ]))
+    wget vim ripgrep atool git docker-compose htop nano curl bzip2 zstd (python3.withPackages(ps: with ps; [ PyGithub click zstandard ])) pipenv
   ];
 
   services = {
@@ -164,7 +164,7 @@
         User = "faforever";
         Group = "faforever";
       };
-      path = [ pkgs.bash pkgs.docker pkgs.bzip2 ];
+      path = [ pkgs.bash pkgs.docker pkgs.zstd ];
     };
     update-leaderboard-inactives = {
       serviceConfig = {
@@ -172,7 +172,7 @@
         User = "faforever";
         Group = "faforever";
       };
-      path = [ pkgs.bash pkgs.docker pkgs.bzip2 ];
+      path = [ pkgs.bash pkgs.docker ];
     };
   };
 
