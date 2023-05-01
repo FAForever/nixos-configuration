@@ -160,11 +160,11 @@
   systemd.services = {
     db-backup = {
       serviceConfig = {
+        # Needs to run as root because of ZFS utilization
+        # Script needs to chown all results to faforever user
         ExecStart = "/bin/sh -c /opt/faf/scripts/backup-faf-db.sh";
-        User = "faforever";
-        Group = "faforever";
       };
-      path = [ pkgs.bash pkgs.docker pkgs.zstd ];
+      path = [ pkgs.bash pkgs.zfs pkgs.zstd pkgs.python3 pkgs.pipenv ];
     };
     update-leaderboard-inactives = {
       serviceConfig = {
