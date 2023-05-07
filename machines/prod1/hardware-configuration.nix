@@ -23,6 +23,11 @@
       fsType = "ext4";
     };
 
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/162A-A3FD";
+      fsType = "vfat";
+    };
+
   fileSystems."/opt/faf" =
     { device = "tank/fafstack";
       fsType = "zfs";
@@ -71,5 +76,5 @@
 
   swapDevices = [ ];
 
-  nix.settings.max-jobs = lib.mkDefault 16;
+  #nix.settings.max-jobs = lib.mkDefault 16;
 }

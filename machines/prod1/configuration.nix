@@ -10,26 +10,43 @@
 
   boot = {
     loader.grub = {
-      enable = true;
+      enable = false;
+      efiSupport = true;
       version = 2;
-      devices = [ "/dev/nvme1n1" "/dev/nvme0n1" ];
+      #devices = [  "/dev/sda1" "/dev/sdb1" ];
+      zfsSupport = true;
+      devices = [ "nodev" ];
+      forceInstall = true;
+      fsIdentifier = "label";
+    };
+
+    loader = {
+      #efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
     };
    
-    # Virtual rescue system boots over fake SATA controllers
-    initrd.availableKernelModules = [ "sd_mod" ];
+    kernelParams = [ "ip=dhcp" ];
 
-    # ZFS tuning for NVMe drives
-    extraModprobeConfig = ''
-        options zfs zfs_vdev_max_active=4000
-	options zfs zfs_vdev_sync_write_min_active=64
-	options zfs zfs_vdev_sync_write_max_active=128
-	options zfs zfs_vdev_sync_read_min_active=64
-	options zfs zfs_vdev_sync_read_max_active=128
-	options zfs zfs_vdev_async_read_min_active=64
-	options zfs zfs_vdev_async_read_max_active=128
-	options zfs zfs_vdev_async_write_min_active=8
-	options zfs zfs_vdev_async_write_max_active=64
-    '';
+  initrd = {
+
+    # Virtual rescue system boots over fake SATA controllers
+    # Also add Intel nic module
+    availableKernelModules = [ "sd_mod" "igb" ];
+
+    network = {
+      enable = true;
+      ssh = {
+        enable = true;
+        authorizedKeys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDs+LyhedR8+3W2xjQglnL9ZQMkpA/69rE9nyPptcj4a hal@arch"
+        ];
+        hostKeys = [
+          "/etc/nixos/secrets/ssh_host_ed25519_key"
+        ];
+      };
+    };
+  };
+
   };
 
   networking = {
@@ -38,6 +55,7 @@
   };
 
   systemd.network = {
+    wait-online.anyInterface = true;
     networks."enp35s0".extraConfig = ''
       [Match]
       Name = enp35s0
@@ -152,7 +170,7 @@
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
   # should.
-  system.stateVersion = "19.09"; # Did you read the comment?
+  system.stateVersion = "22.11"; # Did you read the comment?
 
 }
 

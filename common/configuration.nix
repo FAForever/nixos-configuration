@@ -11,20 +11,31 @@
     zfs.forceImportAll = true;
     zfs.devNodes = "/dev/disk/by-partlabel";
 
-    cleanTmpDir = true;
-    tmpOnTmpfs = true;
+    tmp = {
+      cleanOnBoot = true;
+      useTmpfs = true;
+    };
 
     kernel.sysctl = {
       "net.core.rmem_max" = 4194304;
       "net.core.wmem_max" = 1048576;
       "net.core.netdev_budget" = 600;      
+
+
+      # These were revealed to me in a dream (chatgpt)
+      "net.ipv4.conf.all.accept_redirects" = 0;
+      "net.ipv4.conf.default.accept_redirects" = 0;
+      "net.ipv4.tcp_syncookies" = 1;
+      "net.ipv4.route.flush" = 1;
     };
 
     kernelParams = [
      "zfs.zfs_arc_max=25769803776"
     ];
 
-    #kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
+
+
   };
 
   networking = {
@@ -32,24 +43,40 @@
     useNetworkd = true;
     firewall = {
       enable = true;
-      autoLoadConntrackHelpers = true;
+      autoLoadConntrackHelpers = false; # Incompatible with new kernels
       logRefusedConnections = false;
       rejectPackets = false;
-      extraCommands = ''
-	iptables -A INPUT -f -j DROP
+      extraCommands = '' 
+        # icmp limitations
         iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP;
         iptables -A INPUT -p icmp -m limit --limit 10/s --limit-burst 50 -j ACCEPT;
         iptables -A INPUT -p icmp -j DROP;
+
+	# Block all fragmented packets
+	iptables -A INPUT -f -j DROP
+	iptables -A FORWARD -f -j DROP
+
+	# Block packets with overlapping fragments
+	iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+	iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+	iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+	iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
       '';
       allowedTCPPorts = [
-        80 443
+        80 
+        443
         3478
-        19999
+        8001
+        8082
+        6667
+        6697
+        8167
+        15000
       ];
-      allowedUDPPorts = [
+      allowedUDPPorts = [ # Http3 requires UDP, may be missing things
         3478
       ];
-      allowedUDPPortRanges = [
+      allowedUDPPortRanges = [ # Coturn may or may not be present. Should probably uncommonize it.
         { from = 10000; to = 20000; }
       ];
     };
@@ -64,7 +91,7 @@
   ];
 
   services = {
-    nscd.enableNsncd = true;
+    #nscd.enableNsncd = true;
     timesyncd.servers = [
       "ntp1.hetzner.de"
       "ntp2.hetzner.com"
@@ -75,7 +102,7 @@
         SystemMaxUse=2G
       '';
     };
-    zfs = {
+    zfs = { # Not all our servers may have zfs
       autoScrub = {
         enable = true;
         interval = "Tue, 08:00";
@@ -91,7 +118,9 @@
     };
     openssh = {
       enable = true;
-      passwordAuthentication = false;
+      settings = {
+         passwordAuthentication = false;
+      };
     };
     netdata.enable = true;
   };
