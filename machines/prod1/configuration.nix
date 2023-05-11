@@ -24,28 +24,8 @@
       #efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-   
+
     kernelParams = [ "ip=dhcp" ];
-
-  initrd = {
-
-    # Virtual rescue system boots over fake SATA controllers
-    # Also add Intel nic module
-    availableKernelModules = [ "sd_mod" "igb" ];
-
-    network = {
-      enable = true;
-      ssh = {
-        enable = true;
-        authorizedKeys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDs+LyhedR8+3W2xjQglnL9ZQMkpA/69rE9nyPptcj4a hal@arch"
-        ];
-        hostKeys = [
-          "/etc/nixos/secrets/ssh_host_ed25519_key"
-        ];
-      };
-    };
-  };
 
   };
 
@@ -162,7 +142,7 @@
           OnCalendar = "04:45";
         };
       };
-      
+
     };
   };
 

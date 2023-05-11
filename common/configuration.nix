@@ -21,7 +21,6 @@
       "net.core.wmem_max" = 1048576;
       "net.core.netdev_budget" = 600;      
 
-
       # These were revealed to me in a dream (chatgpt)
       "net.ipv4.conf.all.accept_redirects" = 0;
       "net.ipv4.conf.default.accept_redirects" = 0;
@@ -35,6 +34,25 @@
 
     kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
 
+    initrd = {
+      # Virtual rescue system boots over fake SATA controllers
+      # Also add Intel nic module
+      availableKernelModules = [ "sd_mod" "igb" ];
+
+      # Initrd SSH allows getting into the system if the main pool doesn't import
+      network = {
+        enable = true;
+        ssh = {
+          enable = true;
+          authorizedKeys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDs+LyhedR8+3W2xjQglnL9ZQMkpA/69rE9nyPptcj4a hal@arch"
+          ];
+          hostKeys = [
+            "/etc/nixos/secrets/ssh_host_ed25519_key"
+          ];
+        };
+      };
+    };
 
   };
 
@@ -52,15 +70,15 @@
         iptables -A INPUT -p icmp -m limit --limit 10/s --limit-burst 50 -j ACCEPT;
         iptables -A INPUT -p icmp -j DROP;
 
-	# Block all fragmented packets
-	iptables -A INPUT -f -j DROP
-	iptables -A FORWARD -f -j DROP
+        # Block all fragmented packets
+        iptables -A INPUT -f -j DROP
+        iptables -A FORWARD -f -j DROP
 
-	# Block packets with overlapping fragments
-	iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-	iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-	iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-	iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+        # Block packets with overlapping fragments
+        iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+        iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+        iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+        iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
       '';
       allowedTCPPorts = [
         80 
