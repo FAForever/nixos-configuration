@@ -4,6 +4,7 @@
   imports =
     [
       ../../common/configuration.nix
+      ../../secrets/networking-prod2.nix
       ../../secrets/users-prod.nix
       ./hardware-configuration.nix
     ];
@@ -29,6 +30,13 @@
       copyKernels = true;
     };
 
+  };
+
+  services = {
+    k3s = {
+      enable = true;
+      extraFlags = "--disable traefik";
+    };
   };
 
   networking.hostName = "fafprod3";

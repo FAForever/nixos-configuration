@@ -90,6 +90,8 @@
         6697
         8167
         15000
+	# Kubernetes
+        6443
       ];
       allowedUDPPorts = [ # Http3 requires UDP, may be missing things
         3478
@@ -140,7 +142,6 @@
          passwordAuthentication = false;
       };
     };
-    netdata.enable = true;
   };
 
   virtualisation = {

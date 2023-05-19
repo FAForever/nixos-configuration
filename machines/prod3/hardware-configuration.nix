@@ -28,6 +28,16 @@
       fsType = "vfat";
     };
 
+  fileSystems."/var/lib/docker" =
+    { device = "/dev/zvol/tank/nixos/docker";
+      fsType = "ext4";
+    };
+
+  fileSystems."/var/lib/rancher" =
+    { device = "/dev/zvol/tank/nixos/rancher";
+      fsType = "ext4";
+    };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

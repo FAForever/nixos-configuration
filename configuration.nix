@@ -1,12 +1,11 @@
-{ config, pkgs, ... }:
+# Import the NixOS options
+{ config, lib, pkgs, ... }:
 
+let
+  hostConfigPath = "/etc/nixos/machines/" + (lib.removeSuffix "\n" (builtins.readFile "/etc/nixos/host")) + "/configuration.nix";
+  importedConfig = import hostConfigPath;
+in
 {
-
-  # This file simply exists for you to pick which host we want to deploy
   imports =
-    [
-      ./machines/prod1/configuration.nix
-      #./machines/test1/configuration.nix
-    ];
-
+    [ importedConfig ];
 }
