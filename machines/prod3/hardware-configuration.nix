@@ -38,6 +38,65 @@
       fsType = "ext4";
     };
 
+  fileSystems."/opt/faf" =
+    { device = "tank/faf";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/faf-db" =
+    { device = "tank/faf/mariadb";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/legacy-featured-mod-files" =
+    { device = "tank/faf/legacy-featured-mod-files";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/maps" =
+    { device = "tank/faf/maps";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/mods" =
+    { device = "tank/faf/mods";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/phpbb3" =
+    { device = "tank/faf/phpbb3";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/nodebb" =
+    { device = "tank/faf/nodebb";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/mongodb" =
+    { device = "tank/faf/mongodb";
+      fsType = "zfs";
+    };
+
+  # SMB Share is called "backup", subfolders can be mounted to use a server for more than one purpose
+  # https://docs.hetzner.com/robot/storage-box/access/access-samba-cifs
+  fileSystems."/opt/faf/backups" = {
+    device = "//u280176.your-storagebox.de/backup";
+    fsType = "cifs";
+    options = let
+        automount_opts = "_netdev,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s,seal,uid=1002,gid=1000";
+      in ["${automount_opts},credentials=/etc/nixos/secrets/bx10-secrets"];
+  };
+
+  fileSystems."/opt/faf/data/content/replays-old" = {
+    device = "//u308453.your-storagebox.de/backup/replays";
+    fsType = "cifs";
+    options = let
+        automount_opts = "_netdev,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=20s,seal,uid=1002,gid=1000";
+      in ["${automount_opts},credentials=/etc/nixos/secrets/bx11-secrets"];
+  };
+
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
