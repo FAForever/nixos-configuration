@@ -28,6 +28,56 @@
       fsType = "vfat";
     };
 
+  fileSystems."/var/lib/docker" =
+    { device = "/dev/zvol/tank/nixos/docker";
+      fsType = "ext4";
+    };
+
+  fileSystems."/var/lib/rancher" =
+    { device = "/dev/zvol/tank/nixos/rancher";
+      fsType = "ext4";
+    };
+
+  fileSystems."/opt/faf" =
+    { device = "tank/faf";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/faf-db" =
+    { device = "tank/faf/mariadb";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/legacy-featured-mod-files" =
+    { device = "tank/faf/legacy-featured-mod-files";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/maps" =
+    { device = "tank/faf/maps";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/mods" =
+    { device = "tank/faf/mods";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/phpbb3" =
+    { device = "tank/faf/phpbb3";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/nodebb" =
+    { device = "tank/faf/nodebb";
+      fsType = "zfs";
+    };
+
+  fileSystems."/opt/faf/data/mongodb" =
+    { device = "tank/faf/mongodb";
+      fsType = "zfs";
+    };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
