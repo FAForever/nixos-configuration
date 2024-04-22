@@ -26,6 +26,11 @@
       "net.ipv4.conf.default.accept_redirects" = 0;
       "net.ipv4.tcp_syncookies" = 1;
       "net.ipv4.route.flush" = 1;
+
+      # Solve the "too many open files" errors that are rampant on massive containerized enviroments
+      "fs.inotify.max_queued_events" = 1048576;
+      "fs.inotify.max_user_instances" = 1048576;
+      "fs.inotify.max_user_watches" = 1048576;
     };
 
     kernelParams = [
