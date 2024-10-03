@@ -107,6 +107,10 @@
     };
   };
 
+  
+  services.resolved.dnssec = "false";
+
+  
   systemd.network.wait-online.anyInterface = true;
   
   time.timeZone = "UTC";
@@ -116,6 +120,8 @@
   ];
 
   services = {
+    # awaiting newer nixos
+    #bpftune.enable = true;
     #nscd.enableNsncd = true;
     timesyncd.servers = [
       "ntp1.hetzner.de"
@@ -143,8 +149,9 @@
     };
     openssh = {
       enable = true;
+      ports = [ 22 4400 ];
       settings = {
-         passwordAuthentication = false;
+         PasswordAuthentication = false;
       };
     };
   };
@@ -198,11 +205,12 @@
       isNormalUser = true;
       extraGroups = [ "docker" ];
       group = "faforever";
-      # uid = 1000; fix later
+      uid = 1000;
     };
   };
 
   nix = {
+    settings.experimental-features = [ "nix-command" "flakes" ];
     gc = {
       automatic = true;
       dates = "monthly";
@@ -250,8 +258,10 @@
     domain = "*";
     type = "soft";
     item = "nofile";
-    value = "16384";
+    value = "65536";
   }];
+
+  systemd.enableEmergencyMode = false;
 
   console = {
     font = "Lat2-Terminus16";

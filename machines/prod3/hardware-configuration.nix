@@ -48,6 +48,11 @@
       fsType = "zfs";
     };
 
+  fileSystems."/opt/faf/data/postgres" =
+    { device = "tank/faf/postgres";
+      fsType = "zfs";
+    };
+
   fileSystems."/opt/faf/data/legacy-featured-mod-files" =
     { device = "tank/faf/legacy-featured-mod-files";
       fsType = "zfs";
@@ -78,7 +83,13 @@
       fsType = "zfs";
     };
 
-  # SMB Share is called "backup", subfolders can be mounted to use a server for more than one purpose
+#  fileSystems."/opt/k8s-test" =
+#    { device = "tank/faf/k8s-test";
+#      fsType = "zfs";
+#    };
+
+
+    # SMB Share is called "backup", subfolders can be mounted to use a server for more than one purpose
   # https://docs.hetzner.com/robot/storage-box/access/access-samba-cifs
   fileSystems."/opt/faf/backups" = {
     device = "//u280176.your-storagebox.de/backup";
@@ -88,7 +99,7 @@
       in ["${automount_opts},credentials=/etc/nixos/secrets/bx10-secrets"];
   };
 
-  fileSystems."/opt/faf/data/content/replays-old" = {
+  fileSystems."/opt/faf/data/replays-old" = {
     device = "//u308453.your-storagebox.de/backup/replays";
     fsType = "cifs";
     options = let
@@ -97,6 +108,7 @@
   };
 
 
+  # TODO: Generate mounts using Nix :) ChatGPT 4  
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
