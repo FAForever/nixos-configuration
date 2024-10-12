@@ -3,8 +3,6 @@
 {
   imports =
     [
-      ../../common/configuration.nix
-      ../../secrets/users-test.nix
       ./hardware-configuration.nix
     ];
 

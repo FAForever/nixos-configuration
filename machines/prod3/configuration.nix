@@ -3,9 +3,6 @@
 {
   imports =
     [
-      ../../common/configuration.nix
-      ../../secrets/networking-prod2.nix
-      ../../secrets/users-prod.nix
       ./hardware-configuration.nix
     ];
 
@@ -113,5 +110,7 @@
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqDCEwCJxBeZsI5SyLRNq/5fBhf29p4YEP6IXl8/o7afzTTXVInIl8BW7DkcUbNqZLKFlvvgwREV1dQor8YDkOh/tyubk908IIR+CFYmTEG2eK9zuhDMgpsSYS0VpTr+jHyO9na9gtoq1mqgKG+1N0OhfLl8kGa9YYfJ4+3RjiSZRJAGhoU1KVcJ45a9N5osOXmoaUz8pPg7OnQdftz1LyZzV2fvbMy3ken/puqG77LqZdGNnOXj+F7dyE65c8K4SgvZpsMonpl3fYdVc8AI2MvbC6mvxn9wLltX7z7wRF84fGHmo2JYwSF0XfRUbO+ANv5dj7arC40GKnFiEWIvKr brutus5000@synology"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIDgYjxtGirvoIc63P4TUHDmnXaoWNorPL4m0xJelHayveJc0DbstnwcIwCULTTDOeYTgzexYbCjlpEaABz4lMM9sNdyOQaUj7jn20nPzXAr/nyaTq7wP0klIiOrCvyaEl9eA5IhcwltACPdnDMm+Mr2+v4qyTFJzwVVtyoV42KqWOUzcTfx8/8qlgEbTpih3XX3UeuUtjPQCm8tMDnJiQO4E1UYw6n+fJ9Be4p4tBVbMF7JDn9g3d2DIgfgGWug/n4RMHUNvzLe+X/v8EQZtgNWf1MU7g6xdhWAUDvL75BOJstSDUAgrzPjAqLBpDV+MKAvCctDYKUnpDvGeCXfBn"
   ];
+
+  system.stateVersion = "24.05";
 
 }

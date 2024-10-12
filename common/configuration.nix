@@ -37,7 +37,8 @@
      "zfs.zfs_arc_max=25769803776"
     ];
 
-    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
+    #kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
+    kernelPackages = pkgs.linuxPackages_6_10;
 
     initrd = {
       # Virtual rescue system boots over fake SATA controllers
@@ -70,20 +71,35 @@
       logRefusedConnections = false;
       rejectPackets = false;
       extraCommands = '' 
-        # icmp limitations
-        iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP;
-        iptables -A INPUT -p icmp -m limit --limit 10/s --limit-burst 50 -j ACCEPT;
-        iptables -A INPUT -p icmp -j DROP;
+	# ICMP limitations
 
-        # Block all fragmented packets
-        iptables -A INPUT -f -j DROP
-        iptables -A FORWARD -f -j DROP
+	# Block uncommon ICMP types
+	iptables -A INPUT -p icmp --icmp-type timestamp-request -j DROP
+	iptables -A INPUT -p icmp --icmp-type timestamp-reply -j DROP
+	iptables -A INPUT -p icmp --icmp-type redirect -j DROP
+	iptables -A INPUT -p icmp --icmp-type source-quench -j DROP
 
-        # Block packets with overlapping fragments
-        iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-        iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-        iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-        iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+	# Allow echo requests and replies with rate limiting
+	iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 5 -j ACCEPT
+	iptables -A INPUT -p icmp --icmp-type echo-reply -m limit --limit 1/s --limit-burst 5 -j ACCEPT
+
+	# Allow necessary ICMP types with rate limiting
+	iptables -A INPUT -p icmp --icmp-type destination-unreachable -m limit --limit 1/s --limit-burst 5 -j ACCEPT
+	iptables -A INPUT -p icmp --icmp-type time-exceeded -m limit --limit 1/s --limit-burst 5 -j ACCEPT
+	iptables -A INPUT -p icmp --icmp-type parameter-problem -m limit --limit 1/s --limit-burst 5 -j ACCEPT
+
+	# Log and drop fragmented ICMP packets only
+	iptables -A INPUT -p icmp -f -j LOG --log-prefix "Fragmented ICMP Packet: "
+	iptables -A INPUT -p icmp -f -j DROP
+
+	# Drop all ICMP packets that didn't match previous rules
+	iptables -A INPUT -p icmp -j DROP
+
+	# Other rules (e.g., blocking TCP flags)
+	iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+	iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+	iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+	iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
       '';
       allowedTCPPorts = [
         80 
@@ -109,7 +125,6 @@
 
   
   services.resolved.dnssec = "false";
-
   
   systemd.network.wait-online.anyInterface = true;
   

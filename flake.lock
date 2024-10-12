@@ -2,16 +2,16 @@
   "nodes": {
     "nixpkgs": {
       "locked": {
-        "lastModified": 1727672256,
-        "narHash": "sha256-9/79hjQc9+xyH+QxeMcRsA6hDyw6Z9Eo1/oxjvwirLk=",
+        "lastModified": 1728692301,
+        "narHash": "sha256-QuWjkLVCuWWTyIUOSc4NRoZMNiLaWKV4jM4Vkhz0gfo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1719f27dd95fd4206afb9cec9f415b539978827e",
+        "rev": "ee4d0513c7e6c4dedc8e9865d525cc86b1c3af8a",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-24.05",
+        "ref": "nixos-24.05-small",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -35,7 +35,24 @@
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
+        "secrets": "secrets",
         "srvos": "srvos"
+      }
+    },
+    "secrets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1727988148,
+        "narHash": "sha256-hNrHK4nWrMiarAytrN5F7rZorRXQnXASAXrB9pbb8hw=",
+        "ref": "refs/heads/master",
+        "rev": "801767cbaa17f651c848a186ffa93006d2ee011a",
+        "revCount": 12,
+        "type": "git",
+        "url": "file:secrets"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:secrets"
       }
     },
     "srvos": {
