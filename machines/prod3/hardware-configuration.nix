@@ -43,7 +43,7 @@
       fsType = "zfs";
     };
 
-  fileSystems."/opt/faf/data/faf-db" =
+  fileSystems."/opt/faf/data/mariadb" =
     { device = "tank/faf/mariadb";
       fsType = "zfs";
     };

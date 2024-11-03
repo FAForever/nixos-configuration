@@ -131,7 +131,7 @@
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
-    wget vim ripgrep atool git docker-compose htop nano curl bzip2 zstd (python3.withPackages(ps: with ps; [ PyGithub click zstandard ])) pipenv
+    wget vim ripgrep atool git pv docker-compose htop nano curl bzip2 zstd (python3.withPackages(ps: with ps; [ PyGithub click zstandard ])) pipenv
   ];
 
   services = {
