@@ -2,9 +2,10 @@
   description = "FAForever Nixos Configs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05-small";
+    #nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05-small";
     #nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     srvos.url = "github:nix-community/srvos";
+    nixpkgs.follows = "srvos/nixpkgs";
     secrets = {
       url = "git+file:secrets"; # the submodule is in the ./secrets dir
       flake = false;

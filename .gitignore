@@ -1,1 +1,2 @@
-host
+# We literally run unstable, this is useless for now. Maybe for CI?
+flake.lock
