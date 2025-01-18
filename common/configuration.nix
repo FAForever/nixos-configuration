@@ -38,7 +38,7 @@
     ];
 
     #kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages; # Use latest kernel
-    kernelPackages = pkgs.linuxPackages_6_10;
+    kernelPackages = pkgs.linuxPackages_6_12;
 
     initrd = {
       # Virtual rescue system boots over fake SATA controllers
